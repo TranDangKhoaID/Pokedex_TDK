@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokedex_tdk/domain/models/location.dart';
+
+import 'package:pokedex_tdk/presentation/region/component/region_component.dart';
 import 'package:pokedex_tdk/presentation/region/cubit/region_cubit.dart';
 import 'package:pokedex_tdk/presentation/region/cubit/regiton_state.dart';
 
 // Import your RegionCubit, RegionState, and related classes
 
-class RegionScreen extends StatelessWidget {
+class RegionScreen extends StatefulWidget {
   const RegionScreen({super.key});
+
+  @override
+  State<RegionScreen> createState() => _RegionScreenState();
+}
+
+class _RegionScreenState extends State<RegionScreen> {
+  @override
+  void initState() {
+    context.read<RegionCubit>().getRegion();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,34 +28,9 @@ class RegionScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Region List'),
       ),
-      body: BlocConsumer<RegionCubit, RegionState>(
-        listener: (context, state) {
-          // You can handle state changes here if needed
-        },
-        builder: (context, state) {
-          return Center(
-            child: state.isLoading
-                ? CircularProgressIndicator()
-                : state.region.isEmpty
-                    ? Text('No regions available.')
-                    : ListView.builder(
-                        itemCount: state.region.length,
-                        itemBuilder: (context, index) {
-                          final region = state.region[index];
-                          return ListTile(
-                            title: Text(region.name),
-                            subtitle: Text(region.url),
-                          );
-                        },
-                      ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.read<RegionCubit>().getRegion();
-        },
-        child: Icon(Icons.refresh),
+      body: BlocProvider<RegionCubit>(
+        create: (context) => RegionCubit(),
+        child: RegionComponent(),
       ),
     );
   }

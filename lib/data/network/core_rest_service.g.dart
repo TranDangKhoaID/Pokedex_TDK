@@ -39,6 +39,30 @@ class _CoreRestService implements CoreRestService {
     return value;
   }
 
+  @override
+  Future<RegionDetailResponse> getRegionDetail(
+    int regionId, {
+    Options? options,
+  }) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _result = await _dio.fetch<Map<String, dynamic>>(newOptions.copyWith(
+      method: 'GET',
+      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      queryParameters: queryParameters,
+      path: '/v2/region/${regionId}',
+    )..data = _data);
+    final value = RegionDetailResponse.fromJson(_result.data!);
+    return value;
+  }
+
   RequestOptions newRequestOptions(Object? options) {
     if (options is RequestOptions) {
       return options as RequestOptions;
